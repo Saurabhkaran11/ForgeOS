@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Play, Cpu, Users, Layers, ShieldCheck, Sparkles, FileText, X, Maximize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Cpu, Layers, ShieldCheck, Sparkles, FileText, X, Maximize2, AlertTriangle, Hammer, Target } from 'lucide-react';
 
 interface Slide {
   title: string;
@@ -16,19 +16,119 @@ export default function PresentationPage() {
 
   const slides: Slide[] = [
     {
-      title: 'Moving Beyond Chatbots',
-      subtitle: 'Not a chatbot — an operating AI workforce',
+      title: 'Slide 1 — The Problem',
+      subtitle: 'Startup creation is slow, manual, and chatbot-centric',
+      content: (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[280px]">
+          {/* Card 1: Chatbot Limits */}
+          <div className="border border-zinc-900 bg-zinc-950/60 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="h-8 w-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                <AlertTriangle className="h-4.5 w-4.5" />
+              </div>
+              <h3 className="text-xs font-bold text-white mt-4">The Chatbot Fallacy</h3>
+              <p className="text-[10px] text-zinc-400 mt-2 leading-relaxed font-normal">
+                Standard LLMs are linear, lack persistent memory, cannot verify their own claims, and cannot perform external tasks automatically.
+              </p>
+            </div>
+            <span className="text-[9px] font-mono text-zinc-600 block">✕ Prompters do the manual work</span>
+          </div>
+
+          {/* Card 2: Manual Research */}
+          <div className="border border-zinc-900 bg-zinc-950/60 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="h-8 w-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                <AlertTriangle className="h-4.5 w-4.5" />
+              </div>
+              <h3 className="text-xs font-bold text-white mt-4">Manual Context Loops</h3>
+              <p className="text-[10px] text-zinc-400 mt-2 leading-relaxed font-normal">
+                Founders must manually collect competitor reports, scrape contact databases, and copy-paste outreach pitches between tabs.
+              </p>
+            </div>
+            <span className="text-[9px] font-mono text-zinc-600 block">✕ Spends weeks of human labor</span>
+          </div>
+
+          {/* Card 3: Unmanaged Spoilage */}
+          <div className="border border-zinc-900 bg-zinc-950/60 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="h-8 w-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                <AlertTriangle className="h-4.5 w-4.5" />
+              </div>
+              <h3 className="text-xs font-bold text-white mt-4">Thin Profit Margins</h3>
+              <p className="text-[10px] text-zinc-400 mt-2 leading-relaxed font-normal">
+                Independent retail operators regularly lose up to 8% of revenue to inventory wastage because ordering is based on guesswork.
+              </p>
+            </div>
+            <span className="text-[9px] font-mono text-zinc-600 block">✕ Inefficient inventory forecasting</span>
+          </div>
+        </div>
+      ),
+      speakerNotes: 'Slide 1 (The Problem): Founders spend weeks on scrappy, manual setup tasks. Legacy AI platforms are just simple text inputs that lack coordinate execution, memory state, or actual verification checks.',
+    },
+    {
+      title: 'Slide 2 — How I Built It',
+      subtitle: 'Next.js App Router, local file database, and strict API adapters',
+      content: (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[280px]">
+          {/* Card 1: Core System */}
+          <div className="border border-zinc-900 bg-zinc-950/60 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <Hammer className="h-4.5 w-4.5" />
+              </div>
+              <h3 className="text-xs font-bold text-white mt-4">Event-Driven Engine</h3>
+              <p className="text-[10px] text-zinc-400 mt-2 leading-relaxed font-normal">
+                Built with a Next.js App Router workspace, utilizing a local file database (db.json) for persistence and an event-bus orchestrator for coordinate task dispatching.
+              </p>
+            </div>
+            <span className="text-[9px] font-mono text-indigo-400 font-semibold block">TypeScript / NextJS 15+</span>
+          </div>
+
+          {/* Card 2: API Adapters */}
+          <div className="border border-zinc-900 bg-zinc-950/60 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <Cpu className="h-4.5 w-4.5" />
+              </div>
+              <h3 className="text-xs font-bold text-white mt-4">Sponsor API Middleware</h3>
+              <p className="text-[10px] text-zinc-400 mt-2 leading-relaxed font-normal">
+                Strict, mock-free API integrations: Nebius (Llama 3.3 model inference), Tavily (real competitor lookup), You.com (live claim citations), and Nimble (contact scraper).
+              </p>
+            </div>
+            <span className="text-[9px] font-mono text-indigo-400 font-semibold block">7 Production Integrations</span>
+          </div>
+
+          {/* Card 3: Local Persistence */}
+          <div className="border border-zinc-900 bg-zinc-950/60 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <Layers className="h-4.5 w-4.5" />
+              </div>
+              <h3 className="text-xs font-bold text-white mt-4">Fallback Resilience</h3>
+              <p className="text-[10px] text-zinc-400 mt-2 leading-relaxed font-normal">
+                InsForge, HydraDB, and RocketRide adapters query actual endpoints, with fallback handling for DNS resolution constraints.
+              </p>
+            </div>
+            <span className="text-[9px] font-mono text-indigo-400 font-semibold block">Vitest Integration Verified</span>
+          </div>
+        </div>
+      ),
+      speakerNotes: 'Slide 2 (How I Built It): Built on Next.js 15 App Router. I engineered a coordinate event bus that controls task loops. To execute live, I built HTTP adapters mapping Nebius, Tavily, You.com, and Nimble, with unit test suites validating key integrations.',
+    },
+    {
+      title: 'Slide 3 — How I Am Solving It',
+      subtitle: 'Coordinated Multi-Agent Workforce & dynamic outcomes',
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[280px]">
-          {/* Text block */}
+          {/* Solution details */}
           <div className="space-y-4">
-            <span className="text-3xs uppercase tracking-widest font-extrabold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded inline-block">ForgeOS Autonomy</span>
-            <h3 className="text-base font-bold text-white">Coordinated Agent Workforces</h3>
+            <span className="text-3xs uppercase tracking-widest font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded inline-block">The Solution</span>
+            <h3 className="text-base font-bold text-white">Coordinated Pipelines</h3>
             <p className="text-xs text-zinc-400 leading-relaxed font-normal">
-              Instead of manually prompting chatbots, copy-pasting results, and designing GTM campaigns by hand, ForgeOS instantiates a team of coordinates agents that manage the research, product PM specs, and outreach flows automatically.
+              A single input spawns a team of 6 coordinate agents that perform dynamic search, PM specification writing, leads prospecting, and campaign copy validation. All actions are gated by human-in-the-loop approvals before delivery.
             </p>
-            <div className="text-3xs font-mono text-indigo-400 font-bold flex items-center gap-1.5 mt-2">
-              <span>✓ Fully automated workforce execution</span>
+            <div className="text-3xs font-mono text-emerald-400 font-bold flex items-center gap-1.5 mt-2">
+              <span>✓ Exports 20-Point Strategic strategy Memo</span>
             </div>
           </div>
 
@@ -49,83 +149,7 @@ export default function PresentationPage() {
           </div>
         </div>
       ),
-      speakerNotes: 'Every AI product today is another chatbot. But founders don\'t need a bot to chat with—they need an operating workforce. ForgeOS changes that by turning goals into autonomous pipelines.',
-    },
-    {
-      title: 'Coordinated Agent Workforces',
-      subtitle: '6 specialized agents collaborating via HydraDB shared context',
-      content: (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 h-[280px] overflow-y-auto pr-1">
-          {[
-            { role: 'CEO Orchestrator', agent: 'Aries', desc: 'Directs specialists & compiles reports' },
-            { role: 'Market Researcher', agent: 'Curio', desc: 'Discovers competitors via Tavily' },
-            { role: 'Evidence Validator', agent: 'Verifier', desc: 'Validates citations via You.com' },
-            { role: 'Product Manager', agent: 'Vulcan', desc: 'Generates MVP feature specs' },
-            { role: 'Lead Prospector', agent: 'Scout', desc: 'Scrapes restaurant leads via Nimble' },
-            { role: 'GTM Copywriter', agent: 'Calypso', desc: 'Drafts outreach sales copy' },
-          ].map((a) => (
-            <div key={a.role} className="border border-zinc-900 bg-zinc-950 p-4 rounded-xl space-y-1.5">
-              <span className="text-[10px] text-zinc-500 font-mono block">{a.role}</span>
-              <h4 className="text-xs font-bold text-white">{a.agent}</h4>
-              <p className="text-[10px] text-zinc-400 leading-normal font-normal">{a.desc}</p>
-            </div>
-          ))}
-        </div>
-      ),
-      speakerNotes: 'Instead of one generic model, we spawn a coordinated team of six specialist agents. They pass structured outputs and state parameter contexts down the workflow sequentially.',
-    },
-    {
-      title: 'Live Ecosystem Integrations',
-      subtitle: 'Running on real APIs for production intelligence',
-      content: (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[280px] items-center">
-          {[
-            { name: 'Nebius', role: 'Primary inference', status: 'Live' },
-            { name: 'Tavily', role: 'Competitor scans', status: 'Live' },
-            { name: 'You.com', role: 'Citation checks', status: 'Live' },
-            { name: 'Nimble', role: 'Scrapes contacts', status: 'Live' },
-            { name: 'InsForge', role: 'Cluster sandboxes', status: 'Live' },
-            { name: 'HydraDB', role: 'Context memory', status: 'Live' },
-            { name: 'RocketRide', role: 'Task runners', status: 'Live' },
-            { name: 'Local Store', role: 'Safety compliance', status: 'Live' },
-          ].map((s) => (
-            <div key={s.name} className="border border-zinc-900 bg-zinc-950/60 p-4 rounded-xl text-center space-y-1">
-              <span className="text-3xs uppercase tracking-wider text-emerald-400 font-extrabold bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                {s.status}
-              </span>
-              <h4 className="text-xs font-extrabold text-white mt-2">{s.name}</h4>
-              <p className="text-[9px] text-zinc-500 font-medium leading-tight">{s.role}</p>
-            </div>
-          ))}
-        </div>
-      ),
-      speakerNotes: 'This is fully connected. We perform live Web research on Tavily, factcheck claims on You.com, harvest leads from Nimble, and run model instructions using Nebius Llama 3.3.',
-    },
-    {
-      title: 'Outlining the Outcomes',
-      subtitle: 'Complete 20-point strategic investor deliverables',
-      content: (
-        <div className="border border-zinc-900 bg-zinc-950 p-6 rounded-2xl flex flex-col justify-between h-[280px]">
-          <div className="space-y-4">
-            <span className="text-3xs uppercase tracking-widest font-extrabold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">Venture Output</span>
-            <h3 className="text-sm font-bold text-white">The Investor Strategy Memo</h3>
-            <p className="text-xs text-zinc-400 leading-relaxed font-normal">
-              A comprehensive, exportable strategic outline containing executive summaries, competitor matrices, technical architecture mappings, next steps, and validated citations.
-            </p>
-          </div>
-          <div className="flex gap-4 items-center border-t border-zinc-900 pt-4">
-            <div className="flex items-center gap-2 text-3xs font-mono text-zinc-400">
-              <FileText className="h-4 w-4 text-zinc-500" />
-              <span>20 Strategic Checkpoints</span>
-            </div>
-            <div className="flex items-center gap-2 text-3xs font-mono text-zinc-400">
-              <ShieldCheck className="h-4 w-4 text-emerald-400" />
-              <span>Admin Approved Campaign Logs</span>
-            </div>
-          </div>
-        </div>
-      ),
-      speakerNotes: 'The final deliverable is an investor-ready strategy memo covering all 20 key parameters. The founder gets a fully researched venture roadmap and campaign setup in two minutes.',
+      speakerNotes: 'Slide 3 (How We Solve It): We solve this by introducing an autonomous workforce. A founder types a goal, agents discover competitors, Vulcan designs features, Scout scrapes contacts, and calypso drafts outbound sequences, outputting a 20-point Strategy Memo.',
     },
   ];
 
