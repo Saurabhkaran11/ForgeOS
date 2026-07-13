@@ -29,6 +29,7 @@ export function AppSidebar() {
   }, []);
 
   const navItems = [
+    { name: 'Presentation Deck', href: '/presentation', icon: Layers },
     { name: 'Mission Control', href: '/dashboard', icon: LayoutDashboard },
     { name: 'AI Employees', href: '/dashboard#employees', icon: Users },
     { name: 'Evidence', href: '/dashboard#prospects', icon: Database },
