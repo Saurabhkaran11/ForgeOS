@@ -41,7 +41,7 @@ Follow this structured script to deliver a premium, high-impact demonstration of
 - **Action**: Scroll to the "Sponsor Integration Panel", "HydraDB Shared Context", and "Evidence: Prospect leads".
 - **Talking Points**:
   - Point out how **Tavily** and **You.com** were utilized to find and validate market data.
-  - Highlight the 5 prospects scraped and enriched using **Nimble API** (showing Maria Alvarez, Chen Wei, Giovanni Rossi, etc.).
+  - Highlight the prospects scraped and enriched using **Nimble API** (showing Maria Alvarez, Chen Wei, Giovanni Rossi, etc.).
   - Inspect the **HydraDB Shared Context** panel displaying state synchronization parameters passed between models.
 
 ---
@@ -49,9 +49,9 @@ Follow this structured script to deliver a premium, high-impact demonstration of
 ### **2:45–3:30 — Governance (Approvals Gate)**
 - **Action**: Click "Review Approvals" on the header warning alert or sidebar to navigate to `/approvals`.
 - **Talking Points**:
-  - Point out that before executing external cold campaigns, the **Themis Governance Agent** intercepted the action.
-  - Show the detailed approval payload details: requesting agent (`Calypso`), proposed action, risk level (`Medium`), business rationale, recipients count (`5`), and sponsor integrations (`BAND / RocketRide / Kylon`).
-  - Read the cold email subject/body preview, and click **"Approve & Execute via BAND"**.
+  - Point out that before executing external cold campaigns, the CEO gates the action.
+  - Show the detailed approval payload details: requesting agent (`Calypso`), proposed action, risk level (`Medium`), business rationale, recipients count (`5`), and sponsor integrations.
+  - Read the cold email subject/body preview, and click **"Approve & Execute"**.
 
 ---
 
@@ -59,8 +59,8 @@ Follow this structured script to deliver a premium, high-impact demonstration of
 - **Action**: Navigate to Traces (`/traces`) to review the timeline logs.
 - **Talking Points**:
   - The workflow immediately resumed post-approval.
-  - Walk through the hierarchical trace tree outline: CEO Orchestrator $\rightarrow$ Research Agent (Tavily/You) $\rightarrow$ Product $\rightarrow$ Prospecting (Nimble) $\rightarrow$ GTM $\rightarrow$ Governance (BAND) $\rightarrow$ Kylon Execution $\rightarrow$ Evaluator (AgentOS).
-  - Inspect the details panel showing the **AgentOS** consensus scorecard (96% consensus, 0% hallucination) and latency profiles.
+  - Walk through the hierarchical trace tree outline: CEO Orchestrator $\rightarrow$ Research Agent (Tavily/You) $\rightarrow$ Product $\rightarrow$ Prospecting (Nimble) $\rightarrow$ GTM $\rightarrow$ Local Verification $\rightarrow$ Evaluator.
+  - Inspect the details panel showing the consensus scorecard (88% score) and latency profiles.
 
 ---
 

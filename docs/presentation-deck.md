@@ -21,7 +21,7 @@ A slide-by-slide guide to pitching ForgeOS during a hackathon demo.
 ---
 
 ### **Slide 3 — The Tech: Sponsor Infrastructure at Work**
-* **Title**: Live Intelligence, No Hallucinations
+* **Title**: Live Intelligence
 * **Visual**: The Mission Control Dashboard showcasing the Sponsor Integration Panel.
 * **Speaker Script (1:00–1:30)**:
   > "This is not static mock data. We have integrated top-tier sponsor networks. We search the live web via Tavily, validate citations via You.com, scrape leads via Nimble, provision sandbox runtime clusters via InsForge, and map vector memory in HydraDB. And before any campaign email is dispatched, a human-in-the-loop governance gate approves the action."
