@@ -8,6 +8,13 @@ interface Slide {
   subtitle: string;
   content: React.ReactNode;
   speakerNotes: string;
+  colorTheme: {
+    border: string;
+    bg: string;
+    text: string;
+    glow: string;
+    badge: string;
+  };
 }
 
 export default function PresentationPage() {
@@ -18,6 +25,13 @@ export default function PresentationPage() {
     {
       title: 'Slide 1 — The Problem',
       subtitle: 'Startup creation is slow, manual, and chatbot-centric',
+      colorTheme: {
+        border: 'border-rose-500/20',
+        bg: 'bg-rose-950/5',
+        text: 'text-rose-400',
+        glow: 'bg-rose-500/5',
+        badge: 'text-rose-400 bg-rose-500/10',
+      },
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[280px]">
           {/* Card 1: Chatbot Limits */}
@@ -68,6 +82,13 @@ export default function PresentationPage() {
     {
       title: 'Slide 2 — How I Built It',
       subtitle: 'Next.js App Router, local file database, and strict API adapters',
+      colorTheme: {
+        border: 'border-indigo-500/20',
+        bg: 'bg-indigo-950/5',
+        text: 'text-indigo-400',
+        glow: 'bg-indigo-500/5',
+        badge: 'text-indigo-400 bg-indigo-500/10',
+      },
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[280px]">
           {/* Card 1: Core System */}
@@ -118,6 +139,13 @@ export default function PresentationPage() {
     {
       title: 'Slide 3 — How I Am Solving It',
       subtitle: 'Coordinated Multi-Agent Workforce & dynamic outcomes',
+      colorTheme: {
+        border: 'border-emerald-500/20',
+        bg: 'bg-emerald-950/5',
+        text: 'text-emerald-400',
+        glow: 'bg-emerald-500/5',
+        badge: 'text-emerald-400 bg-emerald-500/10',
+      },
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[280px]">
           {/* Solution details */}
@@ -169,10 +197,13 @@ export default function PresentationPage() {
   const active = slides[currentSlide];
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto w-full space-y-6">
+    <div className="p-6 md:p-8 max-w-4xl mx-auto w-full space-y-6 relative">
+      {/* Background Shift Glows */}
+      <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-[380px] w-[380px] rounded-full blur-[100px] transition-all duration-700 ${active.colorTheme.glow}`} />
+
       {/* Header */}
       <div className="flex justify-between items-center border-b border-zinc-900 pb-4">
-        <div className="flex items-center gap-2 text-indigo-400 font-semibold text-xs uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
           <Sparkles className="h-3.5 w-3.5 animate-pulse" />
           <span>ForgeOS Pitch Console</span>
         </div>
@@ -181,13 +212,15 @@ export default function PresentationPage() {
         </span>
       </div>
 
-      {/* Slide Container */}
-      <div className="border border-zinc-900 bg-zinc-950/40 rounded-3xl p-8 space-y-6 relative overflow-hidden min-h-[460px] flex flex-col justify-between">
+      {/* Slide Container with dynamic theme styles */}
+      <div className={`border transition-all duration-700 bg-zinc-950/40 backdrop-blur-md rounded-3xl p-8 space-y-6 relative overflow-hidden min-h-[460px] flex flex-col justify-between ${active.colorTheme.border} ${active.colorTheme.bg}`}>
         
         {/* Slide Title Info */}
         <div className="space-y-1">
-          <h1 className="text-xl md:text-2xl font-black text-white">{active.title}</h1>
-          <p className="text-zinc-500 text-xs font-normal">{active.subtitle}</p>
+          <span className={`text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded transition-all duration-700 ${active.colorTheme.badge}`}>
+            {active.title}
+          </span>
+          <p className="text-zinc-300 text-xs font-normal mt-2.5">{active.subtitle}</p>
         </div>
 
         {/* Slide Visual Content */}
@@ -225,9 +258,11 @@ export default function PresentationPage() {
         </div>
       </div>
 
-      {/* Speaker Notes Drawer */}
-      <div className="border border-indigo-500/10 bg-indigo-500/5 rounded-2xl p-5 space-y-2">
-        <span className="text-[10px] text-indigo-400 font-extrabold uppercase tracking-widest font-mono">Speaker Notes / Demo Instructions</span>
+      {/* Speaker Notes Drawer with dynamic theme text */}
+      <div className={`border rounded-2xl p-5 space-y-2 transition-all duration-700 ${active.colorTheme.border} ${active.colorTheme.bg}`}>
+        <span className={`text-[10px] font-extrabold uppercase tracking-widest font-mono transition-colors duration-700 ${active.colorTheme.text}`}>
+          Speaker Notes / Demo Instructions
+        </span>
         <p className="text-xs md:text-sm text-zinc-300 leading-relaxed font-normal">
           {active.speakerNotes}
         </p>
