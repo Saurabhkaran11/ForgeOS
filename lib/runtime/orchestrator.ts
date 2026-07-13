@@ -262,6 +262,13 @@ export const Orchestrator = {
         WorkflowStore.saveWorkflow(finalState);
       }
       
+      TraceStore.addTrace({
+        workflowId,
+        level: 'success',
+        agentName: 'System',
+        message: 'Workflow execution paused: Human-in-the-loop approval pending.',
+      });
+      
     } catch (err: any) {
       const w = WorkflowStore.getWorkflow(workflowId);
       if (w) {

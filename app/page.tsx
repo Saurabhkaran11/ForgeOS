@@ -55,11 +55,8 @@ export default function Home() {
             <span>• You.com</span>
             <span>• Nimble</span>
             <span>• InsForge</span>
-            <span>• BAND</span>
             <span>• HydraDB</span>
-            <span>• AgentOS</span>
             <span>• RocketRide</span>
-            <span>• Kylon</span>
           </div>
         </div>
 
@@ -91,11 +88,11 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2 text-zinc-400">
                 <span className="text-zinc-600 font-bold">├──</span>
-                <span><strong>Themis (Governance Agent):</strong> Compliance audit & Human confirmation gate (BAND)</span>
+                <span><strong>Themis (Governance Agent):</strong> Compliance audit & Human confirmation gate</span>
               </div>
               <div className="flex items-center gap-2 text-zinc-400">
                 <span className="text-zinc-600 font-bold">└──</span>
-                <span><strong>Critique (Evaluator Agent):</strong> Perform consensus latency & accuracy audits (AgentOS)</span>
+                <span><strong>Critique (Evaluator Agent):</strong> Perform consensus latency & accuracy audits</span>
               </div>
             </div>
           </div>

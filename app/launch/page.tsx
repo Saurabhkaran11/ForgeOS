@@ -18,7 +18,7 @@ export default function LaunchPage() {
     'Spawning Aries (CEO Agent) to coordinate workflow...',
     'Mapping Tavily / You.com research search filters...',
     'Verifying Nimble API endpoint bindings for prospecting...',
-    'Registering AgentOS evaluation hooks & telemetry...',
+    'Registering dynamic evaluation metrics hooks...',
     'Starting GTM orchestration engine...',
   ];
 

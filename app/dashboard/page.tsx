@@ -113,7 +113,7 @@ export default function DashboardPage() {
           <div className="flex items-start sm:items-center gap-3">
             <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0" />
             <div>
-              <p className="text-xs font-bold text-white">Human Approval Inbox Gate Triggered (BAND)</p>
+              <p className="text-xs font-bold text-white">Human Approval Inbox Gate Triggered</p>
               <p className="text-[10px] text-zinc-400 mt-0.5 leading-normal">
                 Outbound cold email copywriting campaigns are generated but locked until verified by an administrator.
               </p>
@@ -277,7 +277,7 @@ export default function DashboardPage() {
             <section className="space-y-4 animate-fade-in">
               <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
                 <div>
-                  <h2 className="text-lg font-bold text-white">AgentOS Evaluator Assessment</h2>
+                  <h2 className="text-lg font-bold text-white">Venture Safety Assessment</h2>
                   <p className="text-zinc-500 text-2xs mt-0.5">Venture alignment scorecard and latency audits</p>
                 </div>
                 <span className="rounded bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-3xs font-extrabold text-emerald-400">

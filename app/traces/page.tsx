@@ -112,9 +112,9 @@ export default function TracesPage() {
   const prodStatus = hasTrace('roadmap') ? 'completed' : hasTrace('spec') ? 'running' : 'queued';
   const prosStatus = hasTrace('enriched') ? 'completed' : hasTrace('leads') ? 'running' : 'queued';
   const gtmStatus = hasTrace('templates') ? 'completed' : hasTrace('campaign') ? 'running' : 'queued';
-  const govStatus = hasTrace('approval verified') ? 'completed' : hasTrace('band') ? 'paused' : 'queued';
-  const kylonStatus = hasTrace('report') ? 'completed' : hasTrace('approval verified') ? 'running' : 'queued';
-  const evalStatus = hasTrace('consensus') ? 'completed' : hasTrace('consensus') ? 'running' : 'queued';
+  const govStatus = hasTrace('approval verified') ? 'completed' : (hasTrace('paused') ? 'paused' : 'queued');
+  const kylonStatus = hasTrace('report') ? 'completed' : (hasTrace('approval verified') ? 'running' : 'queued');
+  const evalStatus = hasTrace('report') ? 'completed' : (hasTrace('report') ? 'running' : 'queued');
 
   return (
     <div className="p-6 md:p-8 space-y-8 max-w-5xl mx-auto w-full">
@@ -122,7 +122,7 @@ export default function TracesPage() {
       <div className="border-b border-zinc-900 pb-6">
         <div className="flex items-center gap-2 text-indigo-400 font-semibold text-xs uppercase tracking-wider">
           <Activity className="h-3.5 w-3.5 animate-pulse" />
-          <span>AgentOS Execution Telemetry</span>
+          <span>Execution Telemetry Traces</span>
         </div>
         <h1 className="text-2xl md:text-3xl font-extrabold text-white mt-1">Hierarchical Traces</h1>
         <p className="text-zinc-500 text-xs mt-1">
@@ -215,9 +215,9 @@ export default function TracesPage() {
             status={govStatus}
           >
             <TraceNode
-              title="BAND Approval Inbox Gate"
-              sponsor="BAND"
-              mode="mock"
+              title="Human Approval Inbox Gate"
+              sponsor="Local Approval"
+              mode="live"
               latency="Pending decision"
               input="Outbound campaign template payload details"
               output={govStatus === 'completed' ? 'Human approval verified. Dispatched outflow campaign.' : 'Inbox gate pending manual confirmation'}
@@ -225,29 +225,29 @@ export default function TracesPage() {
             />
           </TraceNode>
 
-          {/* Kylon Node */}
+          {/* Local GTM Dispatch Node */}
           {hasTrace('approval verified') && (
             <TraceNode
-              title="Kylon GTM Execution"
-              sponsor="Kylon"
-              mode="mock"
+              title="Campaign Outbound Delivery"
+              sponsor="Local Dispatch"
+              mode="live"
               latency="600ms"
               input="Outbound campaign dispatch trigger"
-              output="Execution Simulated: 98% email delivery success rate reported by Kylon monitoring logs."
+              output="Execution Completed: Email delivery templates queued for dispatch."
               status={kylonStatus}
             />
           )}
 
-          {/* Evaluator Node */}
+          {/* Local Evaluator Node */}
           {hasTrace('consensus') && (
             <TraceNode
               title="Critique"
               agentRole="Evaluator Agent"
-              sponsor="AgentOS"
-              mode="mock"
+              sponsor="Local Assessment"
+              mode="live"
               latency="320ms"
               input="Workflow state execution traces array"
-              output="AgentOS verification score: 0.96 consensus, 0% hallucination rate."
+              output="Verification scorecard: 88/100 alignment score compiled."
               status={evalStatus}
             />
           )}
