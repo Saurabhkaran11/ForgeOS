@@ -50,7 +50,7 @@ export class NebiusAdapter implements SponsorAdapter {
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.2,
         }),
-        signal: AbortSignal.timeout(10000), // 10s timeout
+        signal: AbortSignal.timeout(25000), // 25s timeout
       });
 
       if (!response.ok) {

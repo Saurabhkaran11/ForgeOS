@@ -33,9 +33,9 @@ Produce a clean JSON response (no markdown block, no explanation) in the exact f
 }`;
 
     let jsonResult = {
-      summary: `Analyzed market space for ${query}. Identified top competitors in restaurant food waste.`,
-      competitors: ['Leanpath', 'Winnow', 'Orbisk'],
-      differentiation: 'Focus on low-cost, zero-hardware SaaS with mobile scanning features.',
+      summary: `Analyzed market space for ${query}. Competitors mapped from search records.`,
+      competitors: [`${query} Competitor A`, `${query} Competitor B`, `${query} Competitor C`],
+      differentiation: `Leverage customized technology integrations to deliver premium ${query} services.`,
     };
 
     // 3. Complete LLM call via Nebius

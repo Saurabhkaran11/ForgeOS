@@ -23,10 +23,10 @@ Create a personalized cold email pitch sequence. Produce a clean JSON response (
 }`;
 
     let jsonResult = {
-      summary: 'Drafted cold outreach emails pitching trial access to restaurant owners.',
-      campaignName: 'WasteLess Launch Outbound',
-      subject: 'Lowering food waste & boosting margins at {{restaurantName}}',
-      body: 'Hi {{ownerName}},\n\nI noticed {{restaurantName}} is one of the top spots in {{location}}.\n\nWe built {{companyName}} to help you automatically forecast your order needs. Would you be open to a 5-minute chat?\n\nBest,\n{{companyName}} Team',
+      summary: 'Drafted outreach email copy pitching direct client benefits.',
+      campaignName: 'Direct Launch Outbound',
+      subject: 'Optimizing operations with {{companyName}}',
+      body: 'Hi {{ownerName}},\n\nI noticed your organization is leading development in {{location}}.\n\nWe built {{companyName}} to help you streamline workflows and automate manual processes dynamically. Would you be open to a brief chat?\n\nBest,\n{{companyName}} Team',
     };
 
     try {

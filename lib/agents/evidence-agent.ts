@@ -32,10 +32,10 @@ Produce a clean JSON response (no markdown block, no explanation) in the exact f
 }`;
 
     let jsonResult = {
-      summary: 'Validated market claims regarding restaurant spoilage margins.',
+      summary: `Validated market claims and references regarding ${query}.`,
       validatedClaims: [
-        'Over-purchasing accounts for up to 8% of independent dining revenues.',
-        'Zero-hardware scanner interfaces reduce implementation friction by 70%.',
+        `Custom validation for ${query} technology workflows verified.`,
+        `Low friction interface deployment reduces integration latency.`,
       ]
     };
 

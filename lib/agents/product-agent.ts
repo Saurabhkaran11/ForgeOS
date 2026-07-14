@@ -22,13 +22,13 @@ Design a product spec. Produce a clean JSON response (no markdown block, no expl
 }`;
 
     let jsonResult = {
-      summary: 'Designed low-friction waste-intelligence dashboard product specifications.',
+      summary: `Designed specifications and key MVP features for the target venture.`,
       features: [
-        'Mobile tablet photo waste logger (recognition API)',
-        'Smart POS telemetry inventory alignment',
-        'Automatic vendor restocking purchase order generator',
+        `Dynamic cloud execution and automation dashboard`,
+        `Direct client APIs and telemetry data alignment`,
+        `Automated reporting and metrics export modules`,
       ],
-      idealCustomerProfile: 'Independent diners and cafes with $40k-$120k monthly operating budgets.',
+      idealCustomerProfile: `Enterprise and mid-market organizations seeking optimized workflows.`,
     };
 
     try {
