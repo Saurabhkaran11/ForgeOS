@@ -87,19 +87,31 @@ export default function DashboardPage() {
   const prospects = workflow ? workflow.prospects : demoProspects;
   const isPausedForApproval = workflow?.status === 'paused';
 
-  // Construct context object for the HydraDB context panel
-  const hasFinished = (taskId: string) => workflow?.tasks.some(t => t.id === taskId && t.status === 'completed');
-  
+  const getParsedTaskOutput = (taskId: string) => {
+    const task = workflow?.tasks.find(t => t.id === taskId);
+    if (task && task.output) {
+      try {
+        return JSON.parse(task.output);
+      } catch (e) {
+        return { summary: task.output, output: {} };
+      }
+    }
+    return null;
+  };
+
+  const resParsed = getParsedTaskOutput('task-res-2');
+  const prodParsed = getParsedTaskOutput('task-prod-4');
+
   const hydraContext = {
     mission: goal,
-    marketSummary: hasFinished('task-res-2') 
-      ? 'Found competitors (Winnow, Leanpath) targeting enterprise. Niche: Independent diners requiring zero-hardware scanner specs.'
+    marketSummary: resParsed 
+      ? `Found competitors: ${(resParsed.output?.competitors || []).join(', ')}. ${resParsed.output?.differentiation || resParsed.summary}`
       : 'Awaiting Research Agent...',
-    ICP: hasFinished('task-prod-4')
-      ? 'Independent diners and cafes with $40k-$120k monthly operating budgets.'
+    ICP: prodParsed
+      ? (prodParsed.output?.idealCustomerProfile || prodParsed.summary)
       : 'Awaiting Product Agent...',
-    productStrategy: hasFinished('task-prod-4')
-      ? 'Waste-logging photo scanner, Smart POS inventory alignment, supplier restock REST order suggester.'
+    productStrategy: prodParsed
+      ? (prodParsed.output?.features || []).join(', ')
       : 'Awaiting Product Agent...',
     prospectsCount: prospects.length,
     approvalState: workflow?.status === 'paused' ? 'Gated (Action Required)' : workflow?.status === 'completed' ? 'Approved & Dispatched' : 'Idle/Pending',
