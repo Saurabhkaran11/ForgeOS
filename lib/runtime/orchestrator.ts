@@ -11,6 +11,7 @@ import { GtmAgent } from '../agents/gtm-agent';
 // import { EvaluatorAgent } from '../agents/evaluator-agent';
 import { AgentTask } from '../contracts/agent-task';
 import { AgentResult } from '../contracts/agent-result';
+import { nebius } from '../sponsors/registry';
 
 const ceoAgent = new CeoAgent();
 const researchAgent = new ResearchAgent();
@@ -137,7 +138,7 @@ export const Orchestrator = {
       };
       addTaskToState({ id: 'task-res-2', agentId: 'research-agent', agentName: 'Curio (Research)', description: 'Conduct competitor food waste research', status: 'in_progress' });
       const researchResult = await researchAgent.execute(researchTask);
-      updateTaskStatus('task-res-2', 'completed', researchResult.summary);
+      updateTaskStatus('task-res-2', 'completed', JSON.stringify({ summary: researchResult.summary, output: researchResult.output }));
       updateAgentStatus('Research', 'completed', 'Competitor profiles cached in shared DB');
       updateMetrics(25, researchResult.metrics.estimatedCostUsd, 35);
 
@@ -175,7 +176,7 @@ export const Orchestrator = {
       };
       addTaskToState({ id: 'task-prod-4', agentId: 'product-agent', agentName: 'Vulcan (Product)', description: 'Draft MVP product specifications', status: 'in_progress' });
       const productResult = await productAgent.execute(productTask);
-      updateTaskStatus('task-prod-4', 'completed', productResult.summary);
+      updateTaskStatus('task-prod-4', 'completed', JSON.stringify({ summary: productResult.summary, output: productResult.output }));
       updateAgentStatus('Product', 'completed', 'Product wireframes and roadmap written');
       updateMetrics(30, productResult.metrics.estimatedCostUsd, 60);
 
@@ -202,7 +203,7 @@ export const Orchestrator = {
         WorkflowStore.saveWorkflow(w);
       }
 
-      updateTaskStatus('task-pros-5', 'completed', prospectingResult.summary);
+      updateTaskStatus('task-pros-5', 'completed', JSON.stringify({ summary: prospectingResult.summary, output: prospectingResult.output }));
       updateAgentStatus('Prospecting', 'completed', 'Discovered and enriched 5 restaurant coordinates');
       updateMetrics(20, prospectingResult.metrics.estimatedCostUsd, 70);
 
@@ -221,7 +222,7 @@ export const Orchestrator = {
       };
       addTaskToState({ id: 'task-gtm-6', agentId: 'gtm-agent', agentName: 'Calypso (GTM)', description: 'Draft cold outbound copy', status: 'in_progress' });
       const gtmResult = await gtmAgent.execute(gtmTask);
-      updateTaskStatus('task-gtm-6', 'completed', gtmResult.summary);
+      updateTaskStatus('task-gtm-6', 'completed', JSON.stringify({ summary: gtmResult.summary, output: gtmResult.output }));
       updateAgentStatus('Sales and Marketing', 'completed', 'Cold templates generated');
 
       // Step 7: Local Governance safety validation
@@ -349,30 +350,94 @@ export const Orchestrator = {
 
       // Step 9: CEO agent finishes compilation and saves Report
       updateAgentStatus('CEO', 'working', 'Assembling final investor strategy deck');
-      
-      // Save final report to store
-      WorkflowStore.saveReport(workflowId, {
-        executiveSummary: `${state.name} is a high-margin B2B SaaS platform specifically engineered to resolve the food waste epidemic in independent restaurants. By leveraging camera-based photo scanning of waste bins and matching it against POS sales telemetry, ${state.name} automatically optimizes ordering lists to reduce waste by up to 25% and increase operating margins by 3-5%.`,
-        problem: 'Independent restaurants operate on thin 3-5% margins. Over-purchasing and ingredient spoilage account for up to 8% of lost revenues. Current solutions require complex enterprise-level hardware and data pipelines that independent operators cannot afford or manage.',
-        targetCustomer: 'Independent restaurant owners, managers, and operators running local cafes, bistros, and eateries with $40k to $120k monthly operating budgets, lacking dedicated data engineering/purchasing support teams.',
-        marketFindings: 'Verified market segments indicate there are over 660,000 independent restaurants in the US. Up to 86% of operators express deep anxiety over food waste, but only 3% use software solutions to forecast orders.',
-        competitors: '1. Winnow Solutions (Enterprise focus, high upfront hardware costs)\n2. Leanpath (Enterprise hotels/cafeterias, scale-based hardware)\n3. Orbisk (Enterprise kitchen focus, camera system rental fees)',
-        productSolution: 'A mobile-tablet SaaS application that integrates directly with Toast/Square POS terminals, logs waste bin spoilage through simple camera photo scanning, and uses AI order recommendations to close the loop.',
-        mvpFeatures: '1. Mobile Tablet Spoilage Photo Scanner\n2. Real-time POS Inventory Spoilage Logs Alignment\n3. Supplier portal REST purchase order suggester\n4. Operator margin opportunities dashboard\n5. Historical sales demand forecaster',
-        businessModel: 'Software-as-a-Service (SaaS) monthly licensing subscription.',
-        pricingHypothesis: '$149/month per active restaurant location, with a 14-day free trial period.',
-        technicalArchitecture: '1. Model Inference layer: Nebius (Llama-3.1-70B-Instruct)\n2. Environment sandbox: InsForge sandbox regions\n3. Shared vector database context: HydraDB servers\n4. Telemetry logs & evaluates: Local workflow store\n5. Outbound dispatchers: Local coordinators',
-        gtmStrategy: 'Targeted cold email campaigns offering a free food-cost audit pilot program to local restaurant groups list enriched by Nimble.',
-        targetProspects: '1. The Golden Fork (Maria Alvarez, maria@goldenforksf.com, San Francisco, CA)\n2. Noodle Express (Chen Wei, c.wei@noodleexpress.net, Oakland, CA)\n3. Bella Italia Bistro (Giovanni Rossi, giuseppe@bellaitalia-sf.com, SF, CA)\n4. Green Garden Cafe (Sarah Jenkins, sarah@greengardencafe.com, Berkeley, CA)\n5. Taco Loco (Carlos Mendez, carlos@tacolocosf.com, San Francisco, CA)',
-        campaignAssets: 'Email Subject: Lowering food waste & boosting margins at {{restaurantName}}\nBody Preview: Hi {{ownerName}}, I noticed {{restaurantName}} is one of the top spots in {{location}}. For independent restaurants, food waste eats up to 8% of revenues. WasteLess AI helps you forecast order needs using simple photos of inventory. Would you be open to a 5-minute chat?',
-        financialAssumptions: 'Customer Acquisition Cost (CAC): $450. Customer Lifetime Value (LTV): $5,300. Payback period: 3 months. Monthly churn rate target: < 1.5%.',
-        keyRisks: '1. Friction in scanning compliance from busy kitchen staff.\n2. POS API partnership blockers.',
-        governanceDecisions: 'Human review approval verified. Decision recorded: Outreach outbound template approved.',
+            const getParsedOutput = (taskId: string) => {
+        const task = state.tasks.find(t => t.id === taskId);
+        if (task && task.output) {
+          try {
+            return JSON.parse(task.output);
+          } catch (e) {
+            return { summary: task.output, output: {} };
+          }
+        }
+        return { summary: '', output: {} };
+      };
+
+      const resParsed = getParsedOutput('task-res-2');
+      const prodParsed = getParsedOutput('task-prod-4');
+      const prosParsed = getParsedOutput('task-pros-5');
+      const gtmParsed = getParsedOutput('task-gtm-6');
+
+      const competitorsList = resParsed.output?.competitors || [];
+      const featuresList = prodParsed.output?.features || [];
+      const leadsList = prosParsed.output?.leads || [];
+      const emailBody = gtmParsed.output?.body || '';
+
+      const reportPrompt = `You are Aries, the CEO Orchestrator agent. Compile the final 20-point strategic investor deck report for the venture "${state.name}".
+Goal: "${state.goal}"
+Competitors: ${JSON.stringify(competitorsList)}
+MVP Features: ${JSON.stringify(featuresList)}
+Outbound Campaign Body: ${JSON.stringify(emailBody)}
+Prospects Enriched: ${JSON.stringify(leadsList)}
+
+Produce a clean JSON response (no markdown block, no explanation) in the exact format:
+{
+  "executiveSummary": "1-sentence executive summary detailing ${state.name} core B2B value proposition",
+  "problem": "1-sentence problem description in the target market",
+  "targetCustomer": "1-sentence ideal customer profile based on the goal",
+  "marketFindings": "1-sentence market size or sector analysis based on search findings",
+  "competitors": "list of competitors formatted with line breaks",
+  "productSolution": "1-sentence product specs overview",
+  "mvpFeatures": "list of MVP features formatted with line breaks",
+  "businessModel": "description of subscription tiers",
+  "pricingHypothesis": "specific monthly fee hypothesis",
+  "technicalArchitecture": "list of technical architecture stack layers",
+  "gtmStrategy": "1-sentence go-to-market plan",
+  "targetProspects": "list of scraped prospects formatted with line breaks",
+  "campaignAssets": "Outbound email campaign copy template assets",
+  "financialAssumptions": "CAC, LTV, and payback assumptions",
+  "keyRisks": "list of 2 major risks formatted with line breaks",
+  "governanceDecisions": "verification gate results",
+  "sponsorInfrastructure": "brief summary of sponsor integrations used",
+  "readinessScore": 88,
+  "nextSteps": "top 3 immediate next steps formatted with line breaks",
+  "citations": "list of 3 relevant citations formatted with line breaks"
+}`;
+
+      let reportData = {
+        executiveSummary: `${state.name} is a B2B SaaS platform specifically engineered to support: ${state.goal}`,
+        problem: 'Awaiting market metrics analysis.',
+        targetCustomer: 'Target profile specifications.',
+        marketFindings: 'Sector analysis findings.',
+        competitors: competitorsList.map((c: string, idx: number) => `${idx + 1}. ${c}`).join('\n') || '1. Competitor A\n2. Competitor B',
+        productSolution: 'SaaS solution mapping APIs.',
+        mvpFeatures: featuresList.map((f: string, idx: number) => `${idx + 1}. ${f}`).join('\n') || '1. MVP Feature A\n2. MVP Feature B',
+        businessModel: 'SaaS monthly licensing subscription.',
+        pricingHypothesis: '$149/month, with a 14-day free trial.',
+        technicalArchitecture: '1. Inference: Nebius\n2. Sandbox: InsForge\n3. Memory: HydraDB',
+        gtmStrategy: 'Targeted outbound campaigns.',
+        targetProspects: leadsList.map((l: any, idx: number) => `${idx + 1}. ${l.name} (${l.owner}, ${l.email}, ${l.location})`).join('\n') || '1. Lead A\n2. Lead B',
+        campaignAssets: `Subject: Lowering costs\nBody: ${emailBody || 'Outreach copy.'}`,
+        financialAssumptions: 'CAC: $450. LTV: $5,300.',
+        keyRisks: '1. Implementation friction.\n2. API blockages.',
+        governanceDecisions: 'Human review approval verified.',
         sponsorInfrastructure: '1. Nebius (model completions)\n2. InsForge (sandboxes)\n3. Tavily (market size scraper)\n4. You.com (evidence citations)\n5. Nimble (prospect scraping)\n6. HydraDB (shared context memory)\n7. RocketRide (workflow triggers)',
         readinessScore: 88,
-        nextSteps: '1. Establish Toast/Square POS partner sandbox sandbox access.\n2. Roll out the 5 restaurant pilot audits in the SF Bay Area.\n3. Integrate direct supplier API invoice ingest parsers.',
-        citations: '1. National Restaurant Association 2025 Industry Memo\n2. EPA Food Spoilage Metrics & Cost Matrix (2024)\n3. Independent Foodservice Distributors Consensus (2024)',
-      });
+        nextSteps: '1. Build cloud partner integration.\n2. Roll out pilot test setups.\n3. Expand API bindings.',
+        citations: '1. Industry Memo\n2. Cost Matrix',
+      };
+
+      try {
+        const completeResult = await nebius.complete(reportPrompt);
+        const text = completeResult.text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(text);
+        if (parsed.executiveSummary && parsed.problem) {
+          reportData = parsed;
+        }
+      } catch (e) {
+        console.error('Nebius dynamic report compilation failed, using fallback:', e);
+      }
+
+      WorkflowStore.saveReport(workflowId, reportData);
 
       // Update workflow state to completed
       const w = WorkflowStore.getWorkflow(workflowId);
