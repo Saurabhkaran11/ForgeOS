@@ -26,7 +26,7 @@ Create a personalized cold email pitch sequence. Produce a clean JSON response (
       summary: 'Drafted cold outreach emails pitching trial access to restaurant owners.',
       campaignName: 'WasteLess Launch Outbound',
       subject: 'Lowering food waste & boosting margins at {{restaurantName}}',
-      body: 'Hi {{ownerName}},\n\nI noticed {{restaurantName}} is one of the top spots in {{location}}. For independent restaurants, food waste regularly eats up to 8% of revenues.\n\nWe built WasteLess AI to help you automatically forecast your order needs using simple photos of inventory. Would you be open to a 5-minute chat?\n\nBest,\nWasteLess AI Team',
+      body: 'Hi {{ownerName}},\n\nI noticed {{restaurantName}} is one of the top spots in {{location}}.\n\nWe built {{companyName}} to help you automatically forecast your order needs. Would you be open to a 5-minute chat?\n\nBest,\n{{companyName}} Team',
     };
 
     try {

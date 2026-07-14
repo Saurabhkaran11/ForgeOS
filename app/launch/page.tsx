@@ -7,8 +7,8 @@ import { demoCompany } from '@/lib/demo-data';
 
 export default function LaunchPage() {
   const router = useRouter();
-  const [name, setName] = useState(demoCompany.name);
-  const [goal, setGoal] = useState(demoCompany.goal);
+  const [name, setName] = useState('');
+  const [goal, setGoal] = useState('');
   const [isLaunching, setIsLaunching] = useState(false);
   const [launchStep, setLaunchStep] = useState(0);
 
@@ -69,14 +69,26 @@ export default function LaunchPage() {
       <div className="max-w-xl w-full">
         {!isLaunching ? (
           <div className="border border-zinc-800 bg-zinc-900/40 backdrop-blur-md rounded-2xl p-8 shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center">
-                <Rocket className="h-5 w-5 text-white" />
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center">
+                  <Rocket className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-white">Create your AI Company</h1>
+                  <p className="text-xs text-zinc-500">Provide the seed ideas to generate your automated venture.</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">Create your AI Company</h1>
-                <p className="text-xs text-zinc-500">Provide the seed ideas to generate your automated venture.</p>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setName(demoCompany.name);
+                  setGoal(demoCompany.goal);
+                }}
+                className="text-3xs uppercase font-extrabold tracking-widest text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 px-2.5 py-1 rounded"
+              >
+                Preload Demo
+              </button>
             </div>
 
             <form onSubmit={handleLaunch} className="space-y-5">

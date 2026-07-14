@@ -41,7 +41,7 @@ export default function Home() {
             href="/launch"
             className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-98"
           >
-            Launch WasteLess AI Demo
+            Launch Custom Venture
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

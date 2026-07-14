@@ -18,6 +18,7 @@ import {
 export function AppSidebar() {
   const pathname = usePathname();
   const [isDemoMode, setIsDemoMode] = useState(true);
+  const [activeStartupName, setActiveStartupName] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/config')
@@ -26,6 +27,27 @@ export function AppSidebar() {
         setIsDemoMode(data.isDemoMode);
       })
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const fetchActiveStartup = () => {
+      const activeId = typeof window !== 'undefined' ? localStorage.getItem('active_workflow_id') : null;
+      if (activeId) {
+        fetch(`/api/workflows/${activeId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.name) {
+              setActiveStartupName(data.name);
+            }
+          })
+          .catch(() => {});
+      } else {
+        setActiveStartupName(null);
+      }
+    };
+    fetchActiveStartup();
+    const interval = setInterval(fetchActiveStartup, 2500);
+    return () => clearInterval(interval);
   }, []);
 
   const navItems = [
@@ -53,16 +75,20 @@ export function AppSidebar() {
         </Link>
       </div>
 
-      {/* Preloaded startup identity indicator */}
-      <div className="px-6 py-4 border-b border-zinc-900 bg-zinc-900/10">
+      {/* Active Startup Identity Indicator */}
+      <div className="px-6 py-4 border-b border-zinc-900 bg-zinc-950/40">
         <div className="flex items-center justify-between">
           <span className="text-3xs font-semibold uppercase tracking-wider text-zinc-500">Active Startup</span>
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
+          {activeStartupName && (
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+          )}
         </div>
-        <p className="mt-1 text-sm font-semibold text-zinc-200">WasteLess AI</p>
+        <p className="mt-1 text-sm font-semibold text-zinc-200">
+          {activeStartupName || 'None Active'}
+        </p>
       </div>
 
       {/* Nav Menu */}

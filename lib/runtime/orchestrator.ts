@@ -215,7 +215,7 @@ export const Orchestrator = {
         targetAgent: 'Sales and Marketing',
         taskType: 'campaign-draft',
         goal: 'Draft outbound sales pitches offering trial access to prospect list',
-        input: { prospects: prospectingResult.output.leads },
+        input: { prospects: prospectingResult.output.leads, companyName: state.name },
         requiredSkills: ['copywriting'],
         approvalPolicy: 'before_external_action', // approval required!
       };

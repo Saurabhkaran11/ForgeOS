@@ -138,7 +138,7 @@ export default function TracesPage() {
           sponsor="HydraDB"
           mode="mock"
           latency="120ms"
-          input="Goal: Build B2B SaaS restaurant food waste platform (WasteLess AI)"
+          input={traces.find(t => t.agentName === 'CEO' && t.message.includes('Accepted Venture Mission'))?.message || 'Goal: Awaiting launch parameters...'}
           output="Successfully spawned specialized specialist agents to handle research and speculation details"
           status={ceoStatus}
         >
