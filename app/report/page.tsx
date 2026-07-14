@@ -2,12 +2,21 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileText, Download, TrendingUp, Target, Award, ListChecks, Lock, HelpCircle, ShieldCheck, Cpu } from 'lucide-react';
-import { demoCompany } from '@/lib/demo-data';
+
+function formatReportValue(value: unknown, fallback = 'Not available'): string {
+  if (value === null || value === undefined || value === '') return fallback;
+  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return fallback;
+  }
+}
 
 export default function ReportPage() {
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [wfName, setWfName] = useState(demoCompany.name);
+  const [wfName, setWfName] = useState('Company');
 
   const fetchReport = () => {
     const workflowId = localStorage.getItem('active_workflow_id');
@@ -20,7 +29,7 @@ export default function ReportPage() {
       })
       .then(data => {
         setReport(data.report);
-        setWfName(data.report.companyName || demoCompany.name);
+        setWfName(formatReportValue(data.report.companyName, 'Company'));
         setLoading(false);
       })
       .catch(() => {
@@ -194,7 +203,7 @@ ${report.citations}
                 {section.label}
               </h2>
               <p className="text-xs md:text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap font-normal">
-                {section.value}
+                {formatReportValue(section.value)}
               </p>
             </div>
           );

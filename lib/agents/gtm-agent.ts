@@ -19,14 +19,14 @@ Create a personalized cold email pitch sequence. Produce a clean JSON response (
   "summary": "1-sentence GTM summary description",
   "campaignName": "Campaign name",
   "subject": "Email outreach subject line (use template variables)",
-  "body": "Email outreach body copy (use template variables like {{ownerName}} and {{restaurantName}})"
+  "body": "Email outreach body copy (use template variables like {{contactName}} and {{companyName}})"
 }`;
 
     let jsonResult = {
       summary: 'Drafted outreach email copy pitching direct client benefits.',
       campaignName: 'Direct Launch Outbound',
       subject: 'Optimizing operations with {{companyName}}',
-      body: 'Hi {{ownerName}},\n\nI noticed your organization is leading development in {{location}}.\n\nWe built {{companyName}} to help you streamline workflows and automate manual processes dynamically. Would you be open to a brief chat?\n\nBest,\n{{companyName}} Team',
+      body: 'Hi {{contactName}},\n\nI noticed {{companyName}} is active in {{location}}.\n\nWe built {{senderCompanyName}} to help teams streamline workflows and automate manual processes. Would you be open to a brief chat?\n\nBest,\n{{senderCompanyName}} Team',
     };
 
     try {

@@ -4,6 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { ShieldCheck, ChevronRight, CheckCircle2, XCircle, Terminal } from 'lucide-react';
 import { Approval } from '@/lib/types';
 
+function displayValue(value: unknown, fallback: string): string {
+  if (value === null || value === undefined || value === '') return fallback;
+  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return fallback;
+  }
+}
+
 export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [loading, setLoading] = useState(true);
@@ -145,35 +155,35 @@ export default function ApprovalsPage() {
                       <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-4">
                         <div>
                           <span className="text-zinc-500 font-semibold text-3xs uppercase block">Requesting Agent</span>
-                          <span className="text-zinc-200 mt-1 font-medium block">{activeApproval.payload.requestingAgent || 'Calypso (GTM)'}</span>
+                          <span className="text-zinc-200 mt-1 font-medium block">{displayValue(activeApproval.payload.requestingAgent, 'Calypso (GTM)')}</span>
                         </div>
                         <div>
                           <span className="text-zinc-500 font-semibold text-3xs uppercase block">Sponsor Integration</span>
-                          <span className="text-indigo-400 mt-1 font-mono font-semibold block">{activeApproval.payload.sponsorIntegration || 'RocketRide'}</span>
+                          <span className="text-indigo-400 mt-1 font-mono font-semibold block">{displayValue(activeApproval.payload.sponsorIntegration, 'RocketRide')}</span>
                         </div>
                         <div>
                           <span className="text-zinc-500 font-semibold text-3xs uppercase block">Risk Level</span>
                           <span className="inline-flex mt-1 rounded bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 text-3xs font-extrabold text-amber-400">
-                            {activeApproval.payload.riskLevel || 'Medium'}
+                            {displayValue(activeApproval.payload.riskLevel, 'Medium')}
                           </span>
                         </div>
                         <div>
                           <span className="text-zinc-500 font-semibold text-3xs uppercase block">Recipients Count</span>
-                          <span className="text-zinc-200 mt-1 font-bold block">{activeApproval.payload.recipientsCount || 5} prospects</span>
+                          <span className="text-zinc-200 mt-1 font-bold block">{displayValue(activeApproval.payload.recipientsCount, '0')} prospects</span>
                         </div>
                       </div>
 
                       <div>
                         <span className="text-zinc-500 font-semibold text-3xs uppercase block">Proposed Action</span>
                         <p className="text-zinc-300 mt-1 leading-relaxed bg-zinc-900/20 p-2.5 rounded border border-zinc-900/40">
-                          {activeApproval.payload.proposedAction || 'Deploy outbound cold email sequences'}
+                          {displayValue(activeApproval.payload.proposedAction, 'Deploy outbound cold email sequences')}
                         </p>
                       </div>
 
                       <div>
                         <span className="text-zinc-500 font-semibold text-3xs uppercase block">Business Rationale</span>
                         <p className="text-zinc-300 mt-1 leading-relaxed bg-zinc-900/20 p-2.5 rounded border border-zinc-900/40">
-                          {activeApproval.payload.businessRationale || 'Standard outreach sequence deployment.'}
+                          {displayValue(activeApproval.payload.businessRationale, 'Standard outreach sequence deployment.')}
                         </p>
                       </div>
 
@@ -181,12 +191,12 @@ export default function ApprovalsPage() {
                         <span className="text-zinc-500 font-semibold text-3xs uppercase block font-sans">Message Preview</span>
                         <div>
                           <span className="text-zinc-600">Subject:</span>
-                          <div className="text-zinc-300 mt-0.5 bg-zinc-900/40 p-2 rounded border border-zinc-900/60">{activeApproval.payload.subject}</div>
+                          <div className="text-zinc-300 mt-0.5 bg-zinc-900/40 p-2 rounded border border-zinc-900/60">{displayValue(activeApproval.payload.subject, 'No subject provided')}</div>
                         </div>
                         <div>
                           <span className="text-zinc-600">Body:</span>
                           <pre className="text-zinc-300 mt-0.5 bg-zinc-900/40 p-3 rounded border border-zinc-900/60 whitespace-pre-wrap font-sans leading-relaxed">
-                            {activeApproval.payload.body}
+                            {displayValue(activeApproval.payload.body ?? activeApproval.payload.emailTemplate, 'No message body provided')}
                           </pre>
                         </div>
                       </div>

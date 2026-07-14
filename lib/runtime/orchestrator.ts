@@ -12,6 +12,7 @@ import { GtmAgent } from '../agents/gtm-agent';
 import { AgentTask } from '../contracts/agent-task';
 import { AgentResult } from '../contracts/agent-result';
 import { nebius } from '../sponsors/registry';
+import { Prospect } from '../prospects';
 
 const ceoAgent = new CeoAgent();
 const researchAgent = new ResearchAgent();
@@ -136,7 +137,7 @@ export const Orchestrator = {
         requiredSkills: ['market-research'],
         approvalPolicy: 'none',
       };
-      addTaskToState({ id: 'task-res-2', agentId: 'research-agent', agentName: 'Curio (Research)', description: 'Conduct competitor food waste research', status: 'in_progress' });
+      addTaskToState({ id: 'task-res-2', agentId: 'research-agent', agentName: 'Curio (Research)', description: 'Conduct competitor and market research', status: 'in_progress' });
       const researchResult = await researchAgent.execute(researchTask);
       updateTaskStatus('task-res-2', 'completed', JSON.stringify({ summary: researchResult.summary, output: researchResult.output }));
       updateAgentStatus('Research', 'completed', 'Competitor profiles cached in shared DB');
@@ -150,7 +151,7 @@ export const Orchestrator = {
         sourceAgent: 'Research',
         targetAgent: 'Evidence',
         taskType: 'citation-validation',
-        goal: 'Validate market statistics citations gathered in research stage',
+        goal: state.goal,
         input: { evidence: researchResult.evidence },
         requiredSkills: ['citation-validation'],
         approvalPolicy: 'none',
@@ -169,8 +170,8 @@ export const Orchestrator = {
         sourceAgent: 'Evidence',
         targetAgent: 'Product',
         taskType: 'spec-generation',
-        goal: 'Design a mobile-first restaurant food waste logging spec based on research findings',
-        input: { validatedResearch: evidenceResult.output },
+        goal: state.goal,
+        input: { companyGoal: state.goal, validatedResearch: evidenceResult.output },
         requiredSkills: ['spec-writing'],
         approvalPolicy: 'none',
       };
@@ -181,30 +182,31 @@ export const Orchestrator = {
       updateMetrics(30, productResult.metrics.estimatedCostUsd, 60);
 
       // Step 5: Prospecting Agent finds leads using Nimble
-      updateAgentStatus('Prospecting', 'working', 'Scraping local restaurant directories');
+      updateAgentStatus('Prospecting', 'working', 'Searching for target organizations');
       const prospectingTask: AgentTask = {
         taskId: 'task-pros-5',
         workflowId,
         sourceAgent: 'Product',
         targetAgent: 'Prospecting',
         taskType: 'lead-generation',
-        goal: 'Discover target independent restaurants in SF Bay Area',
-        input: { icp: productResult.output.idealCustomerProfile },
+        goal: state.goal,
+        input: { companyGoal: state.goal, icp: productResult.output.idealCustomerProfile },
         requiredSkills: ['lead-scraping'],
         approvalPolicy: 'none',
       };
-      addTaskToState({ id: 'task-pros-5', agentId: 'prospecting-agent', agentName: 'Scout (Prospecting)', description: 'Scrape restaurant leads via Nimble', status: 'in_progress' });
+      addTaskToState({ id: 'task-pros-5', agentId: 'prospecting-agent', agentName: 'Scout (Prospecting)', description: 'Discover and enrich target leads', status: 'in_progress' });
       const prospectingResult = await prospectingAgent.execute(prospectingTask);
+      const prospectLeads = (prospectingResult.output.leads as Prospect[] | undefined) ?? [];
       
       // Update state with prospects
       const w = WorkflowStore.getWorkflow(workflowId);
       if (w) {
-        w.prospects = prospectingResult.output.leads as any;
+        w.prospects = prospectLeads;
         WorkflowStore.saveWorkflow(w);
       }
 
       updateTaskStatus('task-pros-5', 'completed', JSON.stringify({ summary: prospectingResult.summary, output: prospectingResult.output }));
-      updateAgentStatus('Prospecting', 'completed', 'Discovered and enriched 5 restaurant coordinates');
+      updateAgentStatus('Prospecting', 'completed', `Discovered and enriched ${prospectLeads.length} target leads`);
       updateMetrics(20, prospectingResult.metrics.estimatedCostUsd, 70);
 
       // Step 6: GTM Agent drafts outreach campaigns
@@ -216,7 +218,7 @@ export const Orchestrator = {
         targetAgent: 'Sales and Marketing',
         taskType: 'campaign-draft',
         goal: 'Draft outbound sales pitches offering trial access to prospect list',
-        input: { prospects: prospectingResult.output.leads, companyName: state.name },
+        input: { prospects: prospectLeads, companyName: state.name },
         requiredSkills: ['copywriting'],
         approvalPolicy: 'before_external_action', // approval required!
       };
@@ -242,10 +244,10 @@ export const Orchestrator = {
         payload: {
           ...gtmResult.output,
           requestingAgent: 'Calypso (GTM)',
-          proposedAction: 'Deploy outbound cold email sequence targeting SF Bay Area restaurants',
+          proposedAction: `Deploy outbound outreach sequence for ${state.name}`,
           riskLevel: 'Medium',
-          businessRationale: 'Enables outreach to high-intent leads validated by Nimble, offering food waste reduction inventory scanner free trial.',
-          recipientsCount: 5,
+          businessRationale: `Enables outreach to ${prospectLeads.length} high-intent leads identified for the company goal.`,
+          recipientsCount: prospectLeads.length,
           sponsorIntegration: 'Local DB Storage',
         },
         createdAt: new Date().toLocaleTimeString(),
@@ -368,6 +370,7 @@ export const Orchestrator = {
       const gtmParsed = getParsedOutput('task-gtm-6');
 
       const competitorsList = resParsed.output?.competitors || [];
+      const researchSources = resParsed.output?.researchSources || [];
       const featuresList = prodParsed.output?.features || [];
       const leadsList = prosParsed.output?.leads || [];
       const emailBody = gtmParsed.output?.body || '';
@@ -375,6 +378,7 @@ export const Orchestrator = {
       const reportPrompt = `You are Aries, the CEO Orchestrator agent. Compile the final 20-point strategic investor deck report for the venture "${state.name}".
 Goal: "${state.goal}"
 Competitors: ${JSON.stringify(competitorsList)}
+Live research sources: ${JSON.stringify(researchSources)}
 MVP Features: ${JSON.stringify(featuresList)}
 Outbound Campaign Body: ${JSON.stringify(emailBody)}
 Prospects Enriched: ${JSON.stringify(leadsList)}
@@ -408,14 +412,18 @@ Produce a clean JSON response (no markdown block, no explanation) in the exact f
         problem: 'Awaiting market metrics analysis.',
         targetCustomer: 'Target profile specifications.',
         marketFindings: 'Sector analysis findings.',
-        competitors: competitorsList.map((c: string, idx: number) => `${idx + 1}. ${c}`).join('\n') || '1. Competitor A\n2. Competitor B',
+        competitors: competitorsList.map((c: any, idx: number) => {
+          const name = typeof c === 'string' ? c : c.name;
+          const sourceUrl = typeof c === 'object' ? c.sourceUrl : undefined;
+          return `${idx + 1}. ${name}${sourceUrl ? ` — ${sourceUrl}` : ''}`;
+        }).join('\n') || 'No verified competitors were returned by live research.',
         productSolution: 'SaaS solution mapping APIs.',
         mvpFeatures: featuresList.map((f: string, idx: number) => `${idx + 1}. ${f}`).join('\n') || '1. MVP Feature A\n2. MVP Feature B',
         businessModel: 'SaaS monthly licensing subscription.',
         pricingHypothesis: '$149/month, with a 14-day free trial.',
         technicalArchitecture: '1. Inference: Nebius\n2. Sandbox: InsForge\n3. Memory: HydraDB',
         gtmStrategy: 'Targeted outbound campaigns.',
-        targetProspects: leadsList.map((l: any, idx: number) => `${idx + 1}. ${l.name} (${l.owner}, ${l.email}, ${l.location})`).join('\n') || '1. Lead A\n2. Lead B',
+        targetProspects: leadsList.map((l: any, idx: number) => `${idx + 1}. ${l.companyName} (${l.contactName}, ${l.contactEmail}, ${l.location})`).join('\n') || 'No prospect records returned by the enrichment source.',
         campaignAssets: `Subject: Lowering costs\nBody: ${emailBody || 'Outreach copy.'}`,
         financialAssumptions: 'CAC: $450. LTV: $5,300.',
         keyRisks: '1. Implementation friction.\n2. API blockages.',
@@ -423,7 +431,7 @@ Produce a clean JSON response (no markdown block, no explanation) in the exact f
         sponsorInfrastructure: '1. Nebius (model completions)\n2. InsForge (sandboxes)\n3. Tavily (market size scraper)\n4. You.com (evidence citations)\n5. Nimble (prospect scraping)\n6. HydraDB (shared context memory)\n7. RocketRide (workflow triggers)',
         readinessScore: 88,
         nextSteps: '1. Build cloud partner integration.\n2. Roll out pilot test setups.\n3. Expand API bindings.',
-        citations: '1. Industry Memo\n2. Cost Matrix',
+        citations: researchSources.map((source: any, idx: number) => `${idx + 1}. ${source.title || 'Live research source'} — ${source.url}`).join('\n') || 'No live citations were returned.',
       };
 
       try {

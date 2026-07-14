@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { Rocket, ShieldCheck, ArrowRight, Activity, Users, Sparkles, Layers, Cpu, Database } from 'lucide-react';
-import { demoCompany } from '@/lib/demo-data';
 
 export default function Home() {
   return (

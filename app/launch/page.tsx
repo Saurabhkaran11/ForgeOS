@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Rocket, Sparkles, Server, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
-import { demoCompany } from '@/lib/demo-data';
 
 export default function LaunchPage() {
   const router = useRouter();
@@ -79,16 +78,6 @@ export default function LaunchPage() {
                   <p className="text-xs text-zinc-500">Provide the seed ideas to generate your automated venture.</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setName(demoCompany.name);
-                  setGoal(demoCompany.goal);
-                }}
-                className="text-3xs uppercase font-extrabold tracking-widest text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 px-2.5 py-1 rounded"
-              >
-                Preload Demo
-              </button>
             </div>
 
             <form onSubmit={handleLaunch} className="space-y-5">
@@ -99,7 +88,7 @@ export default function LaunchPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. WasteLess AI"
+                  placeholder="e.g. Acme Analytics"
                   className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-indigo-500 focus:outline-none transition-colors"
                 />
               </div>

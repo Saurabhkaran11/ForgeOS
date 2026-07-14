@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { AgentTask } from '../contracts/agent-task';
 import { AgentResult } from '../contracts/agent-result';
+import { Prospect } from '../prospects';
 
 const DB_PATH = path.join(process.cwd(), 'db.json');
 
@@ -34,15 +35,7 @@ export interface WorkflowState {
     currentTask?: string;
     avatarColor: string;
   }>;
-  prospects: Array<{
-    id: number;
-    name: string;
-    owner: string;
-    email: string;
-    location: string;
-    wasteProblem: string;
-    status: string;
-  }>;
+  prospects: Prospect[];
 }
 
 interface DatabaseSchema {

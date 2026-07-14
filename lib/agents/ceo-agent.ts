@@ -13,7 +13,7 @@ export class CeoAgent extends BaseAgent {
       summary: `Accepted company mission: "${task.goal}". Synthesized requirements and delegated research plan to Curio.`,
       output: {
         companyGoal: task.goal,
-        companyName: task.input.companyName || 'WasteLess AI',
+        companyName: task.input.companyName,
         status: 'initialized',
       },
       confidence: 0.98,

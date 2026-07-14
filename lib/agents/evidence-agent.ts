@@ -9,7 +9,7 @@ export class EvidenceAgent extends BaseAgent {
   readonly requiredSkills = ['citation-validation', 'fact-checking'];
 
   protected async runInternal(task: AgentTask) {
-    const query = task.goal || 'B2B restaurant food waste reduction';
+    const query = task.goal;
     
     // 1. Call You.com search
     let hits: any[] = [];

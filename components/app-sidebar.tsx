@@ -34,7 +34,14 @@ export function AppSidebar() {
       const activeId = typeof window !== 'undefined' ? localStorage.getItem('active_workflow_id') : null;
       if (activeId) {
         fetch(`/api/workflows/${activeId}`)
-          .then(res => res.json())
+          .then(async (res) => {
+            if (res.status === 404) {
+              localStorage.removeItem('active_workflow_id');
+              setActiveStartupName(null);
+              return null;
+            }
+            return res.json();
+          })
           .then(data => {
             if (data && data.name) {
               setActiveStartupName(data.name);

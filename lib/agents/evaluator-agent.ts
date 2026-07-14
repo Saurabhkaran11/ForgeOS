@@ -32,7 +32,7 @@ export class EvaluatorAgent extends BaseAgent {
           {
             id: 'warn-2',
             type: 'GTM Coverage',
-            description: 'Target leads list extracted from Nimble is currently limited to 5 SF Bay Area entries. Expansion to broader region filters recommended.',
+            description: 'Target lead coverage depends on the active company goal and enrichment source. Refine targeting to broaden coverage.',
           }
         ],
       },

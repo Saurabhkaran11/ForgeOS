@@ -21,8 +21,8 @@ import {
 import { MetricCard } from '@/components/metric-card';
 import { AgentCard } from '@/components/agent-card';
 import { TaskTimeline } from '@/components/task-timeline';
-import { demoCompany, demoAgents, demoTasks, demoProspects } from '@/lib/demo-data';
 import { WorkflowState } from '@/lib/runtime/workflow-store';
+import { normalizeProspects } from '@/lib/prospects';
 
 export default function DashboardPage() {
   const [isDemoMode, setIsDemoMode] = useState(true);
@@ -51,6 +51,11 @@ export default function DashboardPage() {
         if (response.ok) {
           const data = await response.json();
           setWorkflow(data);
+        } else if (response.status === 404) {
+          // A development-server restart can remove in-memory workflow state.
+          // Do not leave the dashboard displaying a stale, permanently-running workflow.
+          localStorage.removeItem('active_workflow_id');
+          setWorkflow(null);
         }
       } catch (err) {
         console.error('Error fetching workflow:', err);
@@ -75,16 +80,16 @@ export default function DashboardPage() {
     }
   }, [workflow?.status]);
 
-  // Compute values based on whether a workflow exists or fall back to demo data
-  const name = workflow ? workflow.name : demoCompany.name;
-  const goal = workflow ? workflow.goal : demoCompany.goal;
-  const readinessScore = workflow ? workflow.readinessScore : demoCompany.readinessScore;
-  const hoursSaved = workflow ? workflow.estimatedHoursSaved : demoCompany.estimatedHoursSaved;
-  const cost = workflow ? workflow.executionCost : demoCompany.executionCost;
+  // The dashboard renders only the active workflow; it never substitutes fixed sample data.
+  const name = workflow?.name ?? 'No active company';
+  const goal = workflow?.goal ?? 'Launch a company to populate this workspace with live workflow data.';
+  const readinessScore = workflow?.readinessScore ?? 0;
+  const hoursSaved = workflow?.estimatedHoursSaved ?? 0;
+  const cost = workflow?.executionCost ?? 0;
   
-  const agents = workflow ? workflow.agents : demoAgents;
-  const tasks = workflow ? workflow.tasks : demoTasks;
-  const prospects = workflow ? workflow.prospects : demoProspects;
+  const agents = workflow?.agents ?? [];
+  const tasks = workflow?.tasks ?? [];
+  const prospects = normalizeProspects(workflow?.prospects ?? []);
   const isPausedForApproval = workflow?.status === 'paused';
 
   const getParsedTaskOutput = (taskId: string) => {
@@ -101,11 +106,20 @@ export default function DashboardPage() {
 
   const resParsed = getParsedTaskOutput('task-res-2');
   const prodParsed = getParsedTaskOutput('task-prod-4');
+  const competitorNames = Array.isArray(resParsed?.output?.competitors)
+    ? resParsed.output.competitors.map((competitor: unknown) =>
+        typeof competitor === 'string'
+          ? competitor
+          : typeof competitor === 'object' && competitor !== null && 'name' in competitor
+            ? String((competitor as { name: unknown }).name)
+            : null,
+      ).filter(Boolean)
+    : [];
 
   const hydraContext = {
     mission: goal,
     marketSummary: resParsed 
-      ? `Found competitors: ${(resParsed.output?.competitors || []).join(', ')}. ${resParsed.output?.differentiation || resParsed.summary}`
+      ? `${competitorNames.length ? `Verified competitors: ${competitorNames.join(', ')}.` : 'No verified competitors returned.'} ${resParsed.output?.differentiation || resParsed.summary}`
       : 'Awaiting Research Agent...',
     ICP: prodParsed
       ? (prodParsed.output?.idealCustomerProfile || prodParsed.summary)
@@ -246,10 +260,10 @@ export default function DashboardPage() {
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="border-b border-zinc-900 bg-zinc-950 text-zinc-400 font-semibold">
-                      <th className="p-4">Restaurant</th>
-                      <th className="p-4">Owner / Contact</th>
+                      <th className="p-4">Organization</th>
+                      <th className="p-4">Contact</th>
                       <th className="p-4">Location</th>
-                      <th className="p-4">Estimated Waste Risk</th>
+                      <th className="p-4">Opportunity</th>
                       <th className="p-4 text-right">Verification</th>
                     </tr>
                   </thead>
@@ -263,13 +277,13 @@ export default function DashboardPage() {
                     ) : (
                       prospects.map((prospect, idx) => (
                         <tr key={idx} className="hover:bg-zinc-900/30 transition-colors">
-                          <td className="p-4 font-bold text-white">{prospect.name}</td>
+                          <td className="p-4 font-bold text-white">{prospect.companyName}</td>
                           <td className="p-4">
-                            <div className="font-medium text-zinc-300">{prospect.owner}</div>
-                            <div className="text-3xs text-zinc-500">{prospect.email}</div>
+                            <div className="font-medium text-zinc-300">{prospect.contactName}</div>
+                            <div className="text-3xs text-zinc-500">{prospect.contactEmail}</div>
                           </td>
                           <td className="p-4 text-zinc-400">{prospect.location}</td>
-                          <td className="p-4 text-amber-400 font-medium">{prospect.wasteProblem}</td>
+                          <td className="p-4 text-amber-400 font-medium">{prospect.opportunity}</td>
                           <td className="p-4 text-right">
                             <span className="rounded bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-3xs font-semibold text-emerald-400">
                               {prospect.status}
@@ -331,14 +345,14 @@ export default function DashboardPage() {
                       <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
                       <div>
                         <strong className="text-zinc-200 block">Simulated POS Sync APIs</strong>
-                        <p className="text-zinc-400 mt-1 leading-normal font-normal">Direct Toast/Square REST connectors are currently mocked. Integration needs partner certification audits before deployment.</p>
+                        <p className="text-zinc-400 mt-1 leading-normal font-normal">External system connectors may require partner certification before deployment.</p>
                       </div>
                     </div>
                     <div className="border border-amber-500/10 bg-amber-500/5 p-3 rounded-lg flex items-start gap-2.5">
                       <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
                       <div>
                         <strong className="text-zinc-200 block">Limited Prospect Enrichment</strong>
-                        <p className="text-zinc-400 mt-1 leading-normal font-normal">The list extracted from Nimble is limited to 5 SF Bay Area records. Broadening scraper location query parameters is advised.</p>
+                        <p className="text-zinc-400 mt-1 leading-normal font-normal">Lead coverage depends on the active company goal and connected enrichment source. Refine the goal to broaden the search.</p>
                       </div>
                     </div>
                   </div>
@@ -405,7 +419,7 @@ export default function DashboardPage() {
               {[
                 { name: 'Tavily', desc: 'Market research query checks', isConfig: !isDemoMode },
                 { name: 'You.com', desc: 'Validated research citations', isConfig: !isDemoMode },
-                { name: 'Nimble', desc: 'Enriched restaurant leads list', isConfig: !isDemoMode },
+                { name: 'Nimble', desc: 'Enriched target leads', isConfig: !isDemoMode },
                 { name: 'HydraDB', desc: 'Synchronized cross-agent memory state', isConfig: !isDemoMode },
                 { name: 'RocketRide', desc: 'Outreach outbound dispatcher pipelines', isConfig: !isDemoMode },
                 { name: 'Nebius', desc: 'Model inference completion routing', isConfig: !isDemoMode },
@@ -427,11 +441,11 @@ export default function DashboardPage() {
           {/* Recent Activity Timeline */}
           <section className="border border-zinc-900 bg-zinc-950/20 rounded-xl p-5 space-y-4">
             <div>
-              <h2 className="text-base font-bold text-white">Execution Timeline</h2>
-              <p className="text-zinc-500 text-3xs mt-0.5">Real-time state and task transition updates</p>
+              <h2 className="text-base font-bold text-white">How the work is unfolding</h2>
+              <p className="text-zinc-500 text-3xs mt-0.5">A plain-English story of each step, with technical details tucked away if you want them.</p>
             </div>
             
-            <TaskTimeline tasks={tasks as any} />
+            <TaskTimeline tasks={tasks as any} isPausedForApproval={isPausedForApproval} />
           </section>
         </div>
 
